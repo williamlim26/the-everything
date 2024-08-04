@@ -37,8 +37,8 @@ export default Home
 export const getServerSideProps = async () => {
   const pages = [
     { title: 'Can I help you?', path: '/assistant' },
-    { title: 'shortURL', path: '/shortUrl' },
-    { title: 'Coming 2', path: '/' },
+    { title: 'Short URL', path: '/shortUrl' },
+    { title: 'To-do list', path: '/todo' },
     { title: 'Coming 3', path: '/' },
   ]
 

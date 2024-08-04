@@ -24,6 +24,45 @@ The `pages/api` directory is mapped to `/api/*`. Files in this directory are tre
 
 This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
 
+## Create DynamoDB Table
+```
+const client = new DynamoDBClient({})
+const command = new CreateTableCommand({
+  TableName: 'Reminder',
+  // For more information about data types,
+  // see https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.NamingRulesDataTypes.html#HowItWorks.DataTypes and
+  // https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Programming.LowLevelAPI.html#Programming.LowLevelAPI.DataTypeDescriptors
+  // https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_AttributeDefinition.html
+  AttributeDefinitions: [
+    {
+      AttributeName: 'Id',
+      AttributeType: 'S',
+    },
+    {
+      AttributeName: 'Item',
+      AttributeType: 'S',
+    },
+  ],
+  // https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-dynamodb-table-keyschema.html
+  KeySchema: [
+    {
+      AttributeName: 'Id',
+      KeyType: 'HASH',
+    },
+    {
+      AttributeName: 'Item',
+      KeyType: 'RANGE',
+    },
+  ],
+  ProvisionedThroughput: {
+    ReadCapacityUnits: 1,
+    WriteCapacityUnits: 1,
+  },
+})
+
+const response = await client.send(command)
+```
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:
