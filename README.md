@@ -24,6 +24,15 @@ The `pages/api` directory is mapped to `/api/*`. Files in this directory are tre
 
 This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
 
+## Setup AWS Environment Variables
+https://docs.aws.amazon.com/cli/v1/userguide/cli-configure-envvars.html
+
+```
+AWS_ACCESS_KEY_ID
+AWS_REGION
+AWS_SECRET_ACCESS_KEY
+```
+
 ## Create DynamoDB Table
 ```
 const client = new DynamoDBClient({})

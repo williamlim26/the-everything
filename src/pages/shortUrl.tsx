@@ -1,43 +1,82 @@
-// import { useEffect } from 'react'
-import { CreateTableCommand, DynamoDBClient } from '@aws-sdk/client-dynamodb'
-import { DynamoDBDocumentClient, PutCommand } from '@aws-sdk/lib-dynamodb'
+import React, { useEffect, useState } from 'react'
+import Button from '@/components/Button'
+import { read } from 'fs'
 
 interface Props {
   title: string
 }
 
 const ShortUrl: React.FC<Props> = ({ title }) => {
+  const [longUrl, setLongUrl] = useState('')
+  const [urls, setURLs] = useState([])
+
+  const addItemToTable = async () => {
+    const response = await fetch('/api/aws/putItem', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ longUrl }),
+    })
+
+    return response.json()
+  }
+
+  const handleSubmit = async () => {
+    try {
+      const response = await addItemToTable()
+      console.log('response', response)
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  const handleLongURLChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setLongUrl(e.target.value)
+  }
+
+  const readItemsFromTable = async () => {
+    const response = await fetch('/api/aws/batchGetItem', {
+      method: 'GET',
+    })
+
+    return response.json()
+  }
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await readItemsFromTable()
+
+      setURLs(response)
+    }
+    fetchData()
+  }, [])
+
+  console.log('urls', urls)
+
   return (
     <div className='mx-auto max-w-screen-xl mt-5'>
-      <div className='space-y-5'>
+      <div className='pt-6 pb-6'>
         <h1 className='text-5xl'>{title}</h1>
+      </div>
+      <div className='flex flex-col space-y-4'>
+        <div className='flex items-center space-x-2'>
+          <label className='text-2xl'>Enter Long URL: </label>
+          <input
+            name='myInput'
+            className='border border-gray-300 rounded-lg p-2 text-gray-900'
+            type='text'
+            placeholder='URL'
+            onChange={handleLongURLChange}
+          />
+        </div>
+        <Button buttonText='Create Short Url' onClick={handleSubmit} />
       </div>
     </div>
   )
 }
 
 export const getServerSideProps = async () => {
-  const client = new DynamoDBClient({})
-  const docClient = DynamoDBDocumentClient.from(client)
-
-  //https://us-east-1.console.aws.amazon.com/dynamodbv2/home?region=us-east-1#item-explorer?maximize=true&operation=SCAN&table=Testing1
-  const command = new PutCommand({
-    TableName: 'Testing1',
-    Item: {
-      Id: 'wqfwefw',
-      ShortUrl: 'fnsalfvlwf',
-      LongUrl: 'fwefwwefgwefewfewfwfwefwefweffew',
-      length: 27,
-    },
-  })
-
-  // const response = await docClient.send(command)
-  // console.log(response)
-  // return response
-
-  const response = await client.send(command)
-  console.log(response)
-  // return response
   return {
     props: {
       title: 'Short Url',
