@@ -38,8 +38,9 @@ export default async function batchGetItem(
 
   try {
     const response = await docClient.send(command)
-    console.log('Successfully stored URL:', response)
+    return res.json(response)
   } catch (error) {
-    console.error('Error storing URL:', error)
+    console.error('Error getting items:', error)
+    return res.status(500).json({ message: 'Internal Server Error' })
   }
 }

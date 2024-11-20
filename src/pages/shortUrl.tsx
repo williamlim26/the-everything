@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import Button from '@/components/Button'
-import { read } from 'fs'
+import Table from '@/components/Table'
 
 interface Props {
   title: string
@@ -39,6 +39,7 @@ const ShortUrl: React.FC<Props> = ({ title }) => {
     const response = await fetch('/api/aws/batchGetItem', {
       method: 'GET',
     })
+    console.log('readItemsFromTable', response)
 
     return response.json()
   }
@@ -46,8 +47,14 @@ const ShortUrl: React.FC<Props> = ({ title }) => {
   useEffect(() => {
     const fetchData = async () => {
       const response = await readItemsFromTable()
+      console.log('response', response)
 
-      setURLs(response)
+      const {
+        Responses: { Testing1 },
+      } = response
+
+      console.log('Testing1', Testing1)
+      setURLs(Testing1)
     }
     fetchData()
   }, [])
@@ -71,6 +78,9 @@ const ShortUrl: React.FC<Props> = ({ title }) => {
           />
         </div>
         <Button buttonText='Create Short Url' onClick={handleSubmit} />
+      </div>
+      <div className='pt-5'>
+        <Table title='cool' content={urls} />
       </div>
     </div>
   )
