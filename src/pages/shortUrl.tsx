@@ -1,22 +1,34 @@
 import React, { useEffect, useState } from 'react'
 import Button from '@/components/Button'
 import Table from '@/components/Table'
+import { nanoid } from 'nanoid'
 
 interface Props {
   title: string
 }
 
+interface Url {
+  id?: string
+  LongUrl: string
+  ShortUrl: string
+  length?: number
+}
+
+/**
+ * Simple Short URL
+ *
+ */
 const ShortUrl: React.FC<Props> = ({ title }) => {
   const [longUrl, setLongUrl] = useState('')
-  const [urls, setURLs] = useState([])
+  const [urls, setURLs] = useState<Url[]>([])
 
-  const addItemToTable = async () => {
+  const addItemToTable = async (newURL: Url) => {
     const response = await fetch('/api/aws/putItem', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ longUrl }),
+      body: JSON.stringify(newURL),
     })
 
     return response.json()
@@ -24,7 +36,9 @@ const ShortUrl: React.FC<Props> = ({ title }) => {
 
   const handleSubmit = async () => {
     try {
-      const response = await addItemToTable()
+      const newURL = { LongUrl: longUrl, ShortUrl: nanoid(8) }
+      setURLs([...urls, newURL])
+      const response = await addItemToTable(newURL)
       console.log('response', response)
     } catch (error) {
       console.error(error)
@@ -35,31 +49,25 @@ const ShortUrl: React.FC<Props> = ({ title }) => {
     setLongUrl(e.target.value)
   }
 
-  const readItemsFromTable = async () => {
-    const response = await fetch('/api/aws/batchGetItem', {
+  const fetchItemsFromTable = async () => {
+    // const response = await fetch('/api/aws/fetchItems?id=newDay&shortUrl=newDay', {
+    //   method: 'GET',
+    // })
+    const response = await fetch('/api/aws/fetchItems', {
       method: 'GET',
     })
-    console.log('readItemsFromTable', response)
 
     return response.json()
   }
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await readItemsFromTable()
-      console.log('response', response)
+      const response = await fetchItemsFromTable()
 
-      const {
-        Responses: { Testing1 },
-      } = response
-
-      console.log('Testing1', Testing1)
-      setURLs(Testing1)
+      setURLs(response.Items)
     }
     fetchData()
   }, [])
-
-  console.log('urls', urls)
 
   return (
     <div className='mx-auto max-w-screen-xl mt-5'>
