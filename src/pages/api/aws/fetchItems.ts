@@ -37,11 +37,10 @@ export default async function fetchItems(
     return res.json(response)
   } catch (error) {
     console.error('Error getting items:', error)
-    let errMessage = 'Internal Server Error'
-    if (!AWS_ACCESS_KEY_ID || !AWS_SECRET_ACCESS_KEY || !AWS_REGION) {
-      errMessage = 'Missing AWS environment variables'
-    }
-    return res.status(500).json({ message: AWS_REGION })
+    return res.status(500).json({
+      message: 'Error fetching items',
+      error,
+    })
   }
 }
 
