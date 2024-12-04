@@ -41,7 +41,7 @@ export default async function fetchItems(
     if (!AWS_ACCESS_KEY_ID || !AWS_SECRET_ACCESS_KEY || !AWS_REGION) {
       errMessage = 'Missing AWS environment variables'
     }
-    return res.status(500).json({ message: errMessage })
+    return res.status(500).json({ message: AWS_REGION })
   }
 }
 
