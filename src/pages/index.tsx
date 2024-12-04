@@ -1,9 +1,5 @@
-import Image from 'next/image'
 import { Inter } from 'next/font/google'
-import { assistanceAPI } from './api/assistance'
 import Link from 'next/link'
-
-const inter = Inter({ subsets: ['latin'] })
 
 interface Props {
   pages: Page[]
