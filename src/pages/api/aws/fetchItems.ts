@@ -36,7 +36,8 @@ export default async function fetchItems(
     console.log('Successfully fetched items:', response)
     return res.json(response)
   } catch (error) {
-    console.error('Error getting items:', error)
+    console.error('Error fetching items:', error)
+    console.error('AWS_REGION:', AWS_REGION)
     return res.status(500).json({
       message: 'Error fetching items',
       error,
