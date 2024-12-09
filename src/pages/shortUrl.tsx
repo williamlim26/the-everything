@@ -1,17 +1,17 @@
-import React, { useEffect, useState } from 'react'
-import Button from '@/components/Button'
-import Table from '@/components/Table'
-import { nanoid } from 'nanoid'
+import React, { useEffect, useState } from "react";
+import Button from "@/components/Button";
+import Table from "@/components/Table";
+import { nanoid } from "nanoid";
 
 interface Props {
-  title: string
+  title: string;
 }
 
 interface Url {
-  id?: string
-  LongUrl: string
-  ShortUrl: string
-  length?: number
+  id?: string;
+  LongUrl: string;
+  ShortUrl: string;
+  length?: number;
 }
 
 /**
@@ -19,87 +19,87 @@ interface Url {
  *
  */
 const ShortUrl: React.FC<Props> = ({ title }) => {
-  const [longUrl, setLongUrl] = useState('')
-  const [urls, setURLs] = useState<Url[]>([])
+  const [longUrl, setLongUrl] = useState("");
+  const [urls, setURLs] = useState<Url[]>([]);
 
   const addItemToTable = async (newURL: Url) => {
-    const response = await fetch('/api/aws/putItem', {
-      method: 'POST',
+    const response = await fetch("/api/aws/putItem", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(newURL),
-    })
+    });
 
-    return response.json()
-  }
+    return response.json();
+  };
 
   const handleSubmit = async () => {
     try {
-      const newURL = { LongUrl: longUrl, ShortUrl: nanoid(8) }
-      setURLs([...urls, newURL])
-      const response = await addItemToTable(newURL)
-      console.log('response', response)
+      const newURL = { LongUrl: longUrl, ShortUrl: nanoid(8) };
+      setURLs([...urls, newURL]);
+      const response = await addItemToTable(newURL);
+      console.log("response", response);
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
-  }
+  };
 
   const handleLongURLChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setLongUrl(e.target.value)
-  }
+    setLongUrl(e.target.value);
+  };
 
   const fetchItemsFromTable = async () => {
     // const response = await fetch('/api/aws/fetchItems?id=newDay&shortUrl=newDay', {
     //   method: 'GET',
     // })
-    const response = await fetch('/api/aws/fetchItems', {
-      method: 'GET',
-    })
+    const response = await fetch("/api/aws/fetchItems", {
+      method: "GET",
+    });
 
-    return response.json()
-  }
+    return response.json();
+  };
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await fetchItemsFromTable()
+      const response = await fetchItemsFromTable();
 
-      setURLs(response.Items)
-    }
-    fetchData()
-  }, [])
+      setURLs(response.Items);
+    };
+    fetchData();
+  }, []);
 
   return (
-    <div className='mx-auto max-w-screen-xl mt-5'>
-      <div className='pt-6 pb-6'>
-        <h1 className='text-5xl'>{title}</h1>
+    <div className="mx-auto max-w-screen-xl mt-5">
+      <div className="pt-6 pb-6">
+        <h1 className="text-5xl">{title}</h1>
       </div>
-      <div className='flex flex-col space-y-4'>
-        <div className='flex items-center space-x-2'>
-          <label className='text-2xl'>Enter Long URL: </label>
+      <div className="flex flex-col space-y-4">
+        <div className="flex items-center space-x-2">
+          <label className="text-2xl">Enter Long URL: </label>
           <input
-            name='myInput'
-            className='border border-gray-300 rounded-lg p-2 text-gray-900'
-            type='text'
-            placeholder='URL'
+            name="myInput"
+            className="border border-gray-300 rounded-lg p-2 text-gray-900"
+            type="text"
+            placeholder="URL"
             onChange={handleLongURLChange}
           />
         </div>
-        <Button buttonText='Create Short Url' onClick={handleSubmit} />
+        <Button buttonText="Create Short Url" onClick={handleSubmit} />
       </div>
-      <div className='pt-5'>
-        <Table title='cool' content={urls} />
+      <div className="pt-5">
+        <Table title="cool" content={urls} />
       </div>
     </div>
-  )
-}
+  );
+};
 
 export const getServerSideProps = async () => {
   return {
     props: {
-      title: 'Short Url',
+      title: "Short Url",
     },
-  }
-}
+  };
+};
 
-export default ShortUrl
+export default ShortUrl;

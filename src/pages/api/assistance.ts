@@ -22,7 +22,6 @@
 //     content: 'I need to solve the equation `3x + 11 = 14`. Can you help me?',
 //   })
 
-
 //   const run = openai.beta.threads.runs
 //     .stream(thread.id, {
 //       assistant_id: assistant.id,
@@ -51,4 +50,4 @@
 //     })
 // }
 
-// export default assistanceAPI 
+// export default assistanceAPI

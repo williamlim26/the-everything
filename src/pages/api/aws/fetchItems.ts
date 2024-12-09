@@ -37,13 +37,10 @@ export default async function fetchItems(
     return res.json(response)
   } catch (error) {
     console.error('Error fetching items:', error)
-    console.error('AWS_REGION:', AWS_REGION)
+    console.error('AWS_ACCESS_KEY_ID:', AWS_ACCESS_KEY_ID)
     return res.status(500).json({
       message: 'Error fetching items',
       error,
     })
   }
 }
-
-// Id: 'newDay'
-// ShortUrl: 'newDay'
