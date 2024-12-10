@@ -49,25 +49,40 @@ const ShortUrl: React.FC<Props> = ({ title }) => {
     setLongUrl(e.target.value);
   };
 
-  const fetchItemsFromTable = async () => {
-    // const response = await fetch('/api/aws/fetchItems?id=newDay&shortUrl=newDay', {
-    //   method: 'GET',
-    // })
-    const response = await fetch("/api/aws/fetchItems", {
-      method: "GET",
-    });
+   const readItemsFromTable = async () => {
+     const response = await fetch('/api/aws/batchGetItem', {
+       method: 'GET',
+     })
+     return response.json()
+   }
+   useEffect(() => {
+     const fetchData = async () => {
+       const response = await readItemsFromTable()
+    console.log('Successfully BatchGetCommand items:', response)
+       setURLs(response.Responses.Testing1)
+     }
+     fetchData()
+   }, [])
 
-    return response.json();
-  };
+  // const fetchItemsFromTable = async () => {
+  //   // const response = await fetch('/api/aws/fetchItems?id=newDay&shortUrl=newDay', {
+  //   //   method: 'GET',
+  //   // })
+  //   const response = await fetch("/api/aws/fetchItems", {
+  //     method: "GET",
+  //   });
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const response = await fetchItemsFromTable();
+  //   return response.json();
+  // };
 
-      setURLs(response.Items);
-    };
-    fetchData();
-  }, []);
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     const response = await fetchItemsFromTable();
+
+  //     setURLs(response.Items);
+  //   };
+  //   fetchData();
+  // }, []);
 
   return (
     <div className="mx-auto max-w-screen-xl mt-5">

@@ -38,6 +38,7 @@ export default async function batchGetItem(
 
   try {
     const response = await docClient.send(command);
+    console.log('Successfully BatchGetCommand items:', response)
     return res.json(response);
   } catch (error) {
     console.error("Error getting items:", error);
