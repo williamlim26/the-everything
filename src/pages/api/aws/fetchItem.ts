@@ -7,9 +7,6 @@ export default async function fetchItem(
   res: NextApiResponse
 ) {
   const { url = '' } = req.query
-  console.log('url:', url)
-  console.log('url:', url)
-  console.log('url:', url)
 
   const client = new DynamoDBClient({})
   const docClient = DynamoDBDocumentClient.from(client)
@@ -32,7 +29,7 @@ export default async function fetchItem(
 
     const { LongUrl } = response.Item // Extract the long URL from the database result
     // Redirect to the long URL
-    res.setHeader('Access-Control-Allow-Origin', '*')
+    // res.setHeader('Access-Control-Allow-Origin', '*')3
     res.redirect(301, LongUrl) // 301 Permanent Redirect
     res.end()
   } catch (error) {
