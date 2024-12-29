@@ -84,29 +84,46 @@ const ShortUrl: React.FC<Props> = ({ title }) => {
     fetchData();
   }, []);
 
+  // const handleURLSearch = () => {
+  //   const response =
+  // }
+
   return (
-    <div className="mx-auto max-w-screen-xl mt-5">
-      <div className="pt-6 pb-6">
-        <h1 className="text-5xl">{title}</h1>
+    <div className='mx-auto max-w-screen-xl mt-5'>
+      <div className='pt-6 pb-6'>
+        <h1 className='text-5xl'>{title}</h1>
       </div>
-      <div className="flex flex-col space-y-4">
-        <div className="flex items-center space-x-2">
-          <label className="text-2xl">Enter Long URL: </label>
+      <div className='flex flex-col space-y-4'>
+        <div className='flex items-center space-x-2'>
+          <label className='text-2xl'>Enter Long URL: </label>
           <input
-            name="myInput"
-            className="border border-gray-300 rounded-lg p-2 text-gray-900"
-            type="text"
-            placeholder="URL"
+            name='myInput'
+            className='border border-gray-300 rounded-lg p-2 text-gray-900'
+            type='text'
+            placeholder='URL'
             onChange={handleLongURLChange}
           />
         </div>
-        <Button buttonText="Create Short Url" onClick={handleSubmit} />
+        <Button buttonText='Create Short Url' onClick={handleSubmit} />
       </div>
-      <div className="pt-5">
-        <Table title="cool" content={urls} />
+      <div className='pt-5'>
+        <Table title='cool' content={urls} />
+      </div>
+      <div className='flex flex-col space-y-4'>
+        <div className='flex items-center space-x-2'>
+          <label className='text-2xl'>Enter Short URL: </label>
+          <input
+            name='myInput'
+            className='border border-gray-300 rounded-lg p-2 text-gray-900'
+            type='text'
+            placeholder='URL'
+            onChange={handleLongURLChange}
+          />
+        </div>
+        <Button buttonText='Find URL' onClick={handleSubmit} />
       </div>
     </div>
-  );
+  )
 };
 
 export const getServerSideProps = async () => {

@@ -7,13 +7,6 @@ export default async function fetchItems(
   res: NextApiResponse
 ) {
   const { id = undefined, shortUrl = undefined } = req.query
-  // Fetching AWS credentials and region from environment variables
-  // const { AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_REGION } = process.env
-
-  // // Check if environment variables are present
-  // if (!AWS_ACCESS_KEY_ID || !AWS_SECRET_ACCESS_KEY || !AWS_REGION) {
-  //   throw new Error('Missing AWS environment variables')
-  // }
 
   const client = new DynamoDBClient({})
   const docClient = DynamoDBDocumentClient.from(client)
