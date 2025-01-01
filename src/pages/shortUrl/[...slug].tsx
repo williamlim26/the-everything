@@ -8,7 +8,6 @@ const RedirectShortUrl = () => {
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { slug } = context.params || {}
-  console.log('slug:', slug)
 
   if (!slug) {
     return {
