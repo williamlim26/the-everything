@@ -6,7 +6,7 @@ export default async function putItem(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
-  const { LongUrl = '', ShortUrl } = req.body
+  const { LongUrl = '', ShortUrl, createdAt } = req.body
 
   const client = new DynamoDBClient({});
   const docClient = DynamoDBDocumentClient.from(client);
@@ -18,6 +18,7 @@ export default async function putItem(
       ShortUrl: ShortUrl,
       LongUrl: LongUrl,
       length: ShortUrl.length,
+      createdAt,
     },
   })
 

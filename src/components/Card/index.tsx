@@ -1,9 +1,10 @@
 interface Props {
   shortUrl: string
-  destination: string
+  originalUrl: string
+  dateCreated?: string
 }
 
-const Card = ({ shortUrl, destination }: Props) => {
+const Card = ({ shortUrl, originalUrl, dateCreated }: Props) => {
   return (
     <div className='rounded bg-slate-800 border-4 border-slate-600 p-4'>
       <div className='grid gap-3'>
@@ -15,8 +16,13 @@ const Card = ({ shortUrl, destination }: Props) => {
           </p>
         </div>
         <div>
-          <p>{destination}</p>
+          <p>{originalUrl}</p>
         </div>
+        {dateCreated !== '' && (
+          <div>
+            <p>{dateCreated}</p>
+          </div>
+        )}
       </div>
     </div>
   )
