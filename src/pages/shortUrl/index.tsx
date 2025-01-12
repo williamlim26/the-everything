@@ -4,6 +4,7 @@ import Table from '@/components/Table'
 import { nanoid } from 'nanoid'
 import Card from '@/components/Card'
 import { useRouter } from 'next/router'
+import { GetServerSideProps } from 'next/types'
 
 interface Props {
   title: string
@@ -147,8 +148,7 @@ const ShortUrl: React.FC<Props> = ({ title, baseUrl }) => {
   )
 }
 
-export const getServerSideProps = async (context) => {
-  const { req } = context
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   const protocol = req.headers['x-forwarded-proto'] || 'http'
   const host = req.headers['x-forwarded-host'] || req.headers['host']
   const baseUrl = `${protocol}://${host}`
