@@ -24,13 +24,90 @@ The `pages/api` directory is mapped to `/api/*`. Files in this directory are tre
 
 This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
 
-## Setup AWS Environment Variables
-https://docs.aws.amazon.com/cli/v1/userguide/cli-configure-envvars.html
+## DynamoDB
+The-everything app's url shotener uses DynamoDB as the database choice to store all information.
+Amazon DynamoDB is a fully managed NoSQL database service that provides fast and predictable performance with seamless scalability.
+- [client-dynamodb](https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/client/dynamodb/), DynamoDB Client provided by the AWS SDK for JavaScript, allow interaction with Amazon DynamoDB
+- [lib-dynamodb](https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/Package/-aws-sdk-lib-dynamodb/) specifically designed to provide higher-level of abstractions and utilities working with DynamoDB.  It’s built on top of the `@aws-sdk/client-dynamodb`, offering simplified methods for common tasks, such as putting items, querying, scanning, and performing batch operations.
 
+**Key Differences Between client-dynamodb and lib-dynamodb**
+
+| Feature            | `client-dynamodb`                                    | `lib-dynamodb`                         |
+|--------------------|------------------------------------------------------|----------------------------------------|
+| **Marshalling**    | Manual: Use DynamoDB types like `{ S: "value" }`     | Automatic: Pass native JS types directly |
+| **Unmarshalling**  | Manual: Handle DynamoDB's raw format                 | Automatic: Returns native JS objects   |
+| **Ease of Use**    | More verbose, boilerplate-heavy                      | Simpler, cleaner code                  |
+| **Batch Utilities**| Requires custom logic for batching                   | Simplified built-in methods            |
+| **Target Use Cases**| Fine-grained control, custom logic                  | Quick setup, less boilerplate          |
+
+**Example**
+Using @aws-sdk/client-dynamodb (Low-Level)
+```JS
+import { DynamoDBClient, PutItemCommand } from "@aws-sdk/client-dynamodb";
+
+const client = new DynamoDBClient();
+
+const params = {
+  TableName: "MyTable",
+  Item: {
+    id: { S: "123" }, // Manual marshalling to DynamoDB format
+    name: { S: "John Doe" },
+    age: { N: "30" },
+  },
+};
+
+const command = new PutItemCommand(params);
+await client.send(command);
 ```
-AWS_ACCESS_KEY_ID
-AWS_REGION
-AWS_SECRET_ACCESS_KEY
+Using @aws-sdk/lib-dynamodb (High-Level)
+```JS
+import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
+import { DynamoDBDocumentClient, PutCommand } from "@aws-sdk/lib-dynamodb";
+
+const client = new DynamoDBClient();
+const docClient = DynamoDBDocumentClient.from(client);
+
+const params = {
+  TableName: "MyTable",
+  Item: {
+    id: "123", // Automatic marshalling
+    name: "John Doe",
+    age: 30,
+  },
+};
+
+const command = new PutCommand(params);
+await docClient.send(command);
+```
+## AWS Security Details
+In order to interact with dynamodb in the app, we need
+- AWS_ACCESS_KEY_ID
+- AWS_REGION
+- AWS_SECRET_ACCESS_KEY
+
+Sign in to the AWS Management Console as the root user or an IAM user with sufficient permissions.
+
+Go to the IAM Dashboard: In the AWS Management Console, search for "IAM" in the search bar and select IAM.
+
+Create a new IAM user:
+- Click on Users in the left menu and then Add user.
+- Enter a User name and select the access type (e.g., Programmatic access to get the access key).
+- Assign the necessary permissions (e.g., AdministratorAccess or specific policies for your use case).
+- Download or copy the credentials: After creating the user, you'll see the Access key ID (`AWS_ACCESS_KEY_ID`) and Secret access key (`AWS_SECRET_ACCESS_KEY`). Copy the Secret access key and store it securely.
+
+Important: The AWS_SECRET_ACCESS_KEY will only be shown once when you first create the credentials. After that, you won't be able to retrieve it again for security reasons. If you lose it, you will need to generate a new one.
+
+## Setup AWS Environment Variables
+General guide on setting up AWS Environment variables - https://docs.aws.amazon.com/cli/v1/userguide/cli-configure-envvars.html
+
+In this app, production environment variables are stored in the **Vercel Project's environment settings**.
+
+For local development, create an `.env.local` and store the key values.
+Add the file to `.gitignore` to avoid pushing credentials to Github
+```JS
+AWS_ACCESS_KEY_ID=your-access-key-id
+AWS_REGION=your-region
+AWS_SECRET_ACCESS_KEY=your-secret-access-key
 ```
 
 ## Create DynamoDB Table
