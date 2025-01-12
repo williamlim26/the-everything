@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import Button from '@/components/Button'
-import Table from '@/components/Table'
 import { nanoid } from 'nanoid'
 import Card from '@/components/Card'
-import { useRouter } from 'next/router'
 import { GetServerSideProps } from 'next/types'
+import { formatUnixTimestamp } from '@/utils/formatUnixTimeStamp'
 
 interface Props {
   title: string
@@ -120,14 +119,16 @@ const ShortUrl: React.FC<Props> = ({ title, baseUrl }) => {
           </div>
         </div>
       )}
-      {urls.map(({ id, ShortUrl, LongUrl, createdAt }) => (
-        <Card
-          key={id}
-          shortUrl={`${baseUrl}/shortUrl/${ShortUrl}`}
-          originalUrl={LongUrl}
-          dateCreated={createdAt ? new Date(createdAt * 1000).toString() : ''}
-        />
-      ))}
+      <div className='flex flex-col space-y-4'>
+        {urls.map(({ id, ShortUrl, LongUrl, createdAt }) => (
+          <Card
+            key={id}
+            shortUrl={`${baseUrl}/shortUrl/${ShortUrl}`}
+            originalUrl={LongUrl}
+            dateCreated={createdAt ? formatUnixTimestamp(createdAt) : ''}
+          />
+        ))}
+      </div>
       {/* <div className='pt-5'>
         <Table title='cool' content={urls} />
       </div> */}
