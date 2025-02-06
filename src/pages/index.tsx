@@ -32,11 +32,11 @@ export default Home;
 
 export const getServerSideProps = async () => {
   const pages = [
-    { title: "Can I help you?", path: "/assistant" },
-    { title: "Short URL", path: "/shortUrl" },
-    { title: "To-do list", path: "/todo" },
-    { title: "Coming 3", path: "/" },
-  ];
+    { title: 'Short URL', path: '/shortUrl' },
+    { title: 'DeepSeek', path: '/deepSeek' },
+    // { title: "To-do list", path: "/todo" },
+    // { title: "Coming 3", path: "/" },
+  ]
 
   return {
     props: {

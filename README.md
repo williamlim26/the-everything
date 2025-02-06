@@ -86,11 +86,11 @@ In order to interact with dynamodb in the app, we need
 - AWS_SECRET_ACCESS_KEY
 
 Sign in to the AWS Management Console as the root user or an IAM user with sufficient permissions.
-
+`
 Go to the IAM Dashboard: In the AWS Management Console, search for "IAM" in the search bar and select IAM.
 
 Create a new IAM user:
-- Click on Users in the left menu and then Add user.
+- Click on Users in the left menu and then Add user.`
 - Enter a User name and select the access type (e.g., Programmatic access to get the access key).
 - Assign the necessary permissions (e.g., AdministratorAccess or specific policies for your use case).
 - Download or copy the credentials: After creating the user, you'll see the Access key ID (`AWS_ACCESS_KEY_ID`) and Secret access key (`AWS_SECRET_ACCESS_KEY`). Copy the Secret access key and store it securely.
