@@ -22,7 +22,7 @@ interface Url {
  * Simple Short URL
  *
  */
-const ShortUrl: React.FC<Props> = ({ title, baseUrl }) => {
+const ShortUrl = ({ title, baseUrl }: Props) => {
   const [longUrl, setLongUrl] = useState('')
   const [urls, setURLs] = useState<Url[]>([])
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -84,11 +84,17 @@ const ShortUrl: React.FC<Props> = ({ title, baseUrl }) => {
   }
 
   return (
-    <div className='mx-auto max-w-screen-xl mt-5'>
+    <div className='mx-auto w-max mt-5'>
       <div className='pt-6 pb-6'>
         <div className='flex justify-between'>
           <h1 className='text-5xl'>{title}</h1>
           <Button
+            /**
+             * Button to open the modal for creating a new short URL.
+             *
+             * @prop buttonText - The text displayed on the button.
+             * @prop onClick - Event handler that sets the modal visibility state to true.
+             */
             buttonText='Create short url'
             onClick={() => setIsModalOpen(true)}
           />
@@ -148,6 +154,7 @@ const ShortUrl: React.FC<Props> = ({ title, baseUrl }) => {
     </div>
   )
 }
+
 
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   const protocol = req.headers['x-forwarded-proto'] || 'http'

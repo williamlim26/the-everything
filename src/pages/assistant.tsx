@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-const Assistant: React.FC = () => {
+const Assistant = () => {
   const getData = async () => {
     const result = await fetch("/api/assistance");
     const data = await result.json();
@@ -20,8 +20,6 @@ const Assistant: React.FC = () => {
   );
 };
 
-// export const getServerSideProps = async () => {
-
-// }
+// No getServerSideProps needed since pages are defined in _app.tsx
 
 export default Assistant;
