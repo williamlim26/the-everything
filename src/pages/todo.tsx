@@ -19,6 +19,39 @@ const Todo = ({ title }: Props) => {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
 
+  // Toggle reminder completed state
+  const toggleReminderCompleted = async (id: string, item: string, completed: boolean) => {
+    try {
+      setIsLoading(true)
+      const response = await fetch('/api/aws/updateReminder', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id, item, completed: !completed }),
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to update reminder')
+      }
+
+      // Update local state
+      setReminders(
+        reminders.map((reminder) =>
+          reminder.Id === id
+            ? { ...reminder, completed: !reminder.completed }
+            : reminder
+        )
+      )
+      setError('')
+    } catch (err) {
+      console.error('Error updating reminder:', err)
+      setError('Failed to update reminder. Please try again.')
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   // Debug state changes
   useEffect(() => {
     console.log('Current input value:', newReminderText)
@@ -125,7 +158,13 @@ const Todo = ({ title }: Props) => {
               {reminders.map((reminder) => (
                 <li key={reminder.Id} className='p-4 bg-white hover:bg-gray-50'>
                   <div className='flex items-center'>
-                    <span className='flex-1 text-gray-900'>
+                    <input
+                      type='checkbox'
+                      checked={reminder.completed}
+                      onChange={() => toggleReminderCompleted(reminder.Id, reminder.Item, reminder.completed)}
+                      className='h-5 w-5 text-blue-600 rounded mr-3 focus:ring-blue-500'
+                    />
+                    <span className={`flex-1 ${reminder.completed ? 'line-through text-gray-500' : 'text-gray-900'}`}>
                       {reminder.Item}
                     </span>
                     <span className='text-sm text-gray-500'>
