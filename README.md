@@ -2,7 +2,7 @@
 
 A multi-purpose Next.js application that combines several useful tools in one place, including a URL shortener, todo list manager, and an AI assistant interface.
 
-**Live Demo:** [https://the-everything-will.vercel.app/](https://the-everything-will.vercel.app/)
+**Live Demo:** <a href="https://the-everything-will.vercel.app/" target="_blank">https://the-everything-will.vercel.app/</a>
 
 ![The Everything App Homepage](/public/images/homepage.png)
 
@@ -10,7 +10,7 @@ A multi-purpose Next.js application that combines several useful tools in one pl
 
 The Everything App is designed to be a centralized platform for various productivity tools and utilities. It leverages Next.js for server-side rendering and AWS DynamoDB for data persistence, providing a seamless and responsive user experience.
 
-You can access the live application at: [https://the-everything-will.vercel.app/](https://the-everything-will.vercel.app/)
+You can access the live application at: <a href="https://the-everything-will.vercel.app/" target="_blank">https://the-everything-will.vercel.app/</a>
 
 ## Features
 
@@ -96,43 +96,43 @@ Amazon DynamoDB is a fully managed NoSQL database service that provides fast and
 **Example: Using @aws-sdk/client-dynamodb (Low-Level)**
 
 ```javascript
-import { DynamoDBClient, PutItemCommand } from '@aws-sdk/client-dynamodb'
+import { DynamoDBClient, PutItemCommand } from "@aws-sdk/client-dynamodb";
 
-const client = new DynamoDBClient()
+const client = new DynamoDBClient();
 
 const params = {
-  TableName: 'MyTable',
+  TableName: "MyTable",
   Item: {
-    id: { S: '123' }, // Manual marshalling to DynamoDB format
-    name: { S: 'John Doe' },
-    age: { N: '30' },
+    id: { S: "123" }, // Manual marshalling to DynamoDB format
+    name: { S: "John Doe" },
+    age: { N: "30" },
   },
-}
+};
 
-const command = new PutItemCommand(params)
-await client.send(command)
+const command = new PutItemCommand(params);
+await client.send(command);
 ```
 
 **Example: Using @aws-sdk/lib-dynamodb (High-Level)**
 
 ```javascript
-import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
-import { DynamoDBDocumentClient, PutCommand } from '@aws-sdk/lib-dynamodb'
+import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
+import { DynamoDBDocumentClient, PutCommand } from "@aws-sdk/lib-dynamodb";
 
-const client = new DynamoDBClient()
-const docClient = DynamoDBDocumentClient.from(client)
+const client = new DynamoDBClient();
+const docClient = DynamoDBDocumentClient.from(client);
 
 const params = {
-  TableName: 'MyTable',
+  TableName: "MyTable",
   Item: {
-    id: '123', // Automatic marshalling
-    name: 'John Doe',
+    id: "123", // Automatic marshalling
+    name: "John Doe",
     age: 30,
   },
-}
+};
 
-const command = new PutCommand(params)
-await docClient.send(command)
+const command = new PutCommand(params);
+await docClient.send(command);
 ```
 
 ### AWS Security Details
@@ -175,39 +175,39 @@ AWS_SECRET_ACCESS_KEY=your-secret-access-key
 Example of creating a DynamoDB table for the Reminder feature:
 
 ```javascript
-const client = new DynamoDBClient({})
+const client = new DynamoDBClient({});
 const command = new CreateTableCommand({
-  TableName: 'Reminder',
+  TableName: "Reminder",
   // For more information about data types,
   // see https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.NamingRulesDataTypes.html#HowItWorks.DataTypes and
   // https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Programming.LowLevelAPI.html#Programming.LowLevelAPI.DataTypeDescriptors
   // https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_AttributeDefinition.html
   AttributeDefinitions: [
     {
-      AttributeName: 'Id',
-      AttributeType: 'S',
+      AttributeName: "Id",
+      AttributeType: "S",
     },
     {
-      AttributeName: 'Item',
-      AttributeType: 'S',
+      AttributeName: "Item",
+      AttributeType: "S",
     },
   ],
   // https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-dynamodb-table-keyschema.html
   KeySchema: [
     {
-      AttributeName: 'Id',
-      KeyType: 'HASH',
+      AttributeName: "Id",
+      KeyType: "HASH",
     },
     {
-      AttributeName: 'Item',
-      KeyType: 'RANGE',
+      AttributeName: "Item",
+      KeyType: "RANGE",
     },
   ],
   ProvisionedThroughput: {
     ReadCapacityUnits: 1,
     WriteCapacityUnits: 1,
   },
-})
+});
 
-const response = await client.send(command)
+const response = await client.send(command);
 ```
