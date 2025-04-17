@@ -2,11 +2,18 @@
 
 A multi-purpose Next.js application that combines several useful tools in one place, including a URL shortener, todo list manager, and an AI assistant interface.
 
+**Live Demo:** [https://the-everything-will.vercel.app/](https://the-everything-will.vercel.app/)
+
+![The Everything App Homepage](/public/images/homepage.png)
+
 ## Overview
 
 The Everything App is designed to be a centralized platform for various productivity tools and utilities. It leverages Next.js for server-side rendering and AWS DynamoDB for data persistence, providing a seamless and responsive user experience.
 
+You can access the live application at: [https://the-everything-will.vercel.app/](https://the-everything-will.vercel.app/)
+
 ## Features
+
 - URL Shortener
 - Todo List
 
@@ -78,57 +85,60 @@ Amazon DynamoDB is a fully managed NoSQL database service that provides fast and
 
 **Key Differences Between client-dynamodb and lib-dynamodb**
 
-| Feature            | `client-dynamodb`                                    | `lib-dynamodb`                         |
-|--------------------|------------------------------------------------------|----------------------------------------|
-| **Marshalling**    | Manual: Use DynamoDB types like `{ S: "value" }`     | Automatic: Pass native JS types directly |
-| **Unmarshalling**  | Manual: Handle DynamoDB's raw format                 | Automatic: Returns native JS objects   |
-| **Ease of Use**    | More verbose, boilerplate-heavy                      | Simpler, cleaner code                  |
-| **Batch Utilities**| Requires custom logic for batching                   | Simplified built-in methods            |
-| **Target Use Cases**| Fine-grained control, custom logic                  | Quick setup, less boilerplate          |
+| Feature              | `client-dynamodb`                                | `lib-dynamodb`                           |
+| -------------------- | ------------------------------------------------ | ---------------------------------------- |
+| **Marshalling**      | Manual: Use DynamoDB types like `{ S: "value" }` | Automatic: Pass native JS types directly |
+| **Unmarshalling**    | Manual: Handle DynamoDB's raw format             | Automatic: Returns native JS objects     |
+| **Ease of Use**      | More verbose, boilerplate-heavy                  | Simpler, cleaner code                    |
+| **Batch Utilities**  | Requires custom logic for batching               | Simplified built-in methods              |
+| **Target Use Cases** | Fine-grained control, custom logic               | Quick setup, less boilerplate            |
 
 **Example: Using @aws-sdk/client-dynamodb (Low-Level)**
-```javascript
-import { DynamoDBClient, PutItemCommand } from "@aws-sdk/client-dynamodb";
 
-const client = new DynamoDBClient();
+```javascript
+import { DynamoDBClient, PutItemCommand } from '@aws-sdk/client-dynamodb'
+
+const client = new DynamoDBClient()
 
 const params = {
-  TableName: "MyTable",
+  TableName: 'MyTable',
   Item: {
-    id: { S: "123" }, // Manual marshalling to DynamoDB format
-    name: { S: "John Doe" },
-    age: { N: "30" },
+    id: { S: '123' }, // Manual marshalling to DynamoDB format
+    name: { S: 'John Doe' },
+    age: { N: '30' },
   },
-};
+}
 
-const command = new PutItemCommand(params);
-await client.send(command);
+const command = new PutItemCommand(params)
+await client.send(command)
 ```
 
 **Example: Using @aws-sdk/lib-dynamodb (High-Level)**
-```javascript
-import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import { DynamoDBDocumentClient, PutCommand } from "@aws-sdk/lib-dynamodb";
 
-const client = new DynamoDBClient();
-const docClient = DynamoDBDocumentClient.from(client);
+```javascript
+import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
+import { DynamoDBDocumentClient, PutCommand } from '@aws-sdk/lib-dynamodb'
+
+const client = new DynamoDBClient()
+const docClient = DynamoDBDocumentClient.from(client)
 
 const params = {
-  TableName: "MyTable",
+  TableName: 'MyTable',
   Item: {
-    id: "123", // Automatic marshalling
-    name: "John Doe",
+    id: '123', // Automatic marshalling
+    name: 'John Doe',
     age: 30,
   },
-};
+}
 
-const command = new PutCommand(params);
-await docClient.send(command);
+const command = new PutCommand(params)
+await docClient.send(command)
 ```
 
 ### AWS Security Details
 
 To interact with DynamoDB in the app, you need:
+
 - AWS_ACCESS_KEY_ID
 - AWS_REGION
 - AWS_SECRET_ACCESS_KEY
