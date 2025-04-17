@@ -120,7 +120,7 @@ const Todo = ({ title }: Props) => {
   return (
     <div className='mx-auto max-w-screen-xl mt-5'>
       <div className='space-y-8'>
-        <h1 className='text-5xl font-bold text-blue-900'>{title}</h1>
+        <h1 className='text-5xl font-bold text-white'>{title}</h1>
 
         {/* Add new reminder form */}
         <form onSubmit={addReminder} className='flex gap-2'>

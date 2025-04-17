@@ -14,12 +14,11 @@ const Sidebar = ({ pages }: Props) => {
   const router = useRouter()
   
   return (
-    <div className='relative flex flex-col h-screen bg-gradient-to-b from-blue-900 to-blue-700 text-white w-64 shadow-xl'>
+    <div className='relative flex flex-col h-screen bg-gradient-to-b bg-slate-800 text-white w-64 shadow-xl'>
       <div className='p-6 border-b border-blue-600'>
         <h1 className='font-sans text-3xl font-bold tracking-tight'>
-          Dashboard
+          The Everything
         </h1>
-        <p className='text-blue-200 text-sm mt-1'>Your personal workspace</p>
       </div>
       
       <nav className='flex flex-col p-4 flex-grow'>
@@ -46,7 +45,7 @@ const Sidebar = ({ pages }: Props) => {
         })}
       </nav>
       
-      <div className="p-4 border-t border-blue-600 mt-auto">
+      {/* <div className="p-4 border-t border-blue-600 mt-auto">
         <div className="flex items-center">
           <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-lg font-bold">
             U
@@ -56,7 +55,7 @@ const Sidebar = ({ pages }: Props) => {
             <p className="text-xs text-blue-200">user@example.com</p>
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
   )
 }

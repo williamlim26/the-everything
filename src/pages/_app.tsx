@@ -3,10 +3,10 @@ import type { AppProps } from 'next/app'
 import Layout from '@/components/Layout'
 
 const pages = [
-  { title: 'Can I help you?', path: '/assistant' },
-  { title: 'Short URL', path: '/shortUrl' },
-  { title: 'To-do list', path: '/todo' },
+  // { title: 'Can I help you?', path: '/assistant' },
   { title: 'Home', path: '/' },
+  { title: 'URL Shortener', path: '/URLShortener' },
+  { title: 'To-do List', path: '/todo' },
 ]
 
 export default function App({ Component, pageProps }: AppProps) {
