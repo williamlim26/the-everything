@@ -3,30 +3,36 @@ import type { NextRequest } from 'next/server'
 
 export function middleware(request: NextRequest) {
   const basicAuth = request.headers.get('authorization')
-  if (basicAuth) {
-    const auth = basicAuth.split(' ')[1]
-    const [user, pwd] = Buffer.from(auth, 'base64').toString().split(':')
 
-    if (
-      user === process.env.BASIC_AUTH_USER &&
-      pwd === process.env.BASIC_AUTH_PASSWORD
-    ) {
-      return NextResponse.next()
-    }
+  if (!basicAuth) {
+    return new NextResponse(null, {
+      status: 401,
+      headers: {
+        'WWW-Authenticate': 'Basic realm="Secure Todo App"'
+      }
+    })
   }
 
-  return new NextResponse('Authorization required', {
+  const auth = basicAuth.split(' ')[1]
+  const [user, pwd] = Buffer.from(auth, 'base64').toString().split(':')
+
+  if (user === process.env.AUTH_USERNAME && pwd === process.env.AUTH_PASSWORD) {
+    return NextResponse.next()
+  }
+
+  return new NextResponse(null, {
     status: 401,
     headers: {
-      'WWW-Authenticate': 'Basic realm="Secure Area"',
-    },
+      'WWW-Authenticate': 'Basic realm="Secure Todo App"'
+    }
   })
 }
 
 export const config = {
   matcher: [
-    // only match requests starting with /todo, /api/aws, /urlshortener, or /api/urlshortener
-    '/:path((todo|api/aws|URLShortener|api/urlshortener)(/.*)?)',
-  ],
+    '/todo/:path*',
+    '/api/aws/:path*',
+    '/URLShortener/:path*',
+    '/api/urlshortener/:path*'
+  ]
 }
-
