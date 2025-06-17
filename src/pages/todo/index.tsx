@@ -1,3 +1,4 @@
+import SignUp from '@/components/SignUp'
 import { TrashIcon } from '@heroicons/react/24/outline'
 import { useState, useEffect } from 'react'
 
@@ -17,6 +18,7 @@ const Todo = ({ title }: Props) => {
   const [newReminderText, setNewReminderText] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
+  const [openContactModal, setOpenContactModal] = useState(false)
 
   // Delete a reminder
   const deleteReminder = async (id: string, item: string) => {
@@ -100,11 +102,27 @@ const Todo = ({ title }: Props) => {
     }
   }
 
+  useEffect(() => {
+    if (openContactModal) {
+      const timer = setTimeout(() => {
+        setOpenContactModal(false)
+      }, 5000) 
+      return () => {
+        clearTimeout(timer)
+      }
+    }
+  }, [openContactModal])
+
   // Add a new reminder
   const addReminder = async (e: React.FormEvent) => {
     e.preventDefault()
 
     if (!newReminderText.trim()) return
+
+    if (process.env.NODE_ENV !== 'cool') {
+      setOpenContactModal(true)
+      return 
+    }
 
     try {
       setIsLoading(true)
@@ -180,43 +198,50 @@ const Todo = ({ title }: Props) => {
             <p className='text-gray-500'>No reminders yet. Add one above!</p>
           ) : (
             <ul className='divide-y divide-gray-200 border border-gray-200 rounded-lg overflow-hidden'>
-              {reminders.filter((reminder) => !reminder.completed).map((reminder) => (
-                <li key={reminder.Id} className='p-4 bg-white hover:bg-gray-50'>
-                  <div className='flex items-center'>
-                    <input
-                      type='checkbox'
-                      checked={reminder.completed}
-                      onChange={() =>
-                        toggleReminderCompleted(
-                          reminder.Id,
-                          reminder.Item,
+              {reminders
+                .filter((reminder) => !reminder.completed)
+                .map((reminder) => (
+                  <li
+                    key={reminder.Id}
+                    className='p-4 bg-white hover:bg-gray-50'
+                  >
+                    <div className='flex items-center'>
+                      <input
+                        type='checkbox'
+                        checked={reminder.completed}
+                        onChange={() =>
+                          toggleReminderCompleted(
+                            reminder.Id,
+                            reminder.Item,
+                            reminder.completed
+                          )
+                        }
+                        className='h-5 w-5 text-blue-600 rounded mr-3 focus:ring-blue-500'
+                      />
+                      <span
+                        className={`flex-1 ${
                           reminder.completed
-                        )
-                      }
-                      className='h-5 w-5 text-blue-600 rounded mr-3 focus:ring-blue-500'
-                    />
-                    <span
-                      className={`flex-1 ${
-                        reminder.completed
-                          ? 'line-through text-gray-500'
-                          : 'text-gray-900'
-                      }`}
-                    >
-                      {reminder.Item}
-                    </span>
-                    <span className='text-sm text-gray-500 mr-3'>
-                      {new Date(reminder.createdAt * 1000).toLocaleString()}
-                    </span>
-                    <button
-                      onClick={() => deleteReminder(reminder.Id, reminder.Item)}
-                      className='text-red-500 hover:text-red-700 p-1 rounded-full hover:bg-red-100 transition-colors'
-                      title='Delete reminder'
-                    >
-                      <TrashIcon className='h-5 w-5' />
-                    </button>
-                  </div>
-                </li>
-              ))}
+                            ? 'line-through text-gray-500'
+                            : 'text-gray-900'
+                        }`}
+                      >
+                        {reminder.Item}
+                      </span>
+                      <span className='text-sm text-gray-500 mr-3'>
+                        {new Date(reminder.createdAt * 1000).toLocaleString()}
+                      </span>
+                      <button
+                        onClick={() =>
+                          deleteReminder(reminder.Id, reminder.Item)
+                        }
+                        className='text-red-500 hover:text-red-700 p-1 rounded-full hover:bg-red-100 transition-colors'
+                        title='Delete reminder'
+                      >
+                        <TrashIcon className='h-5 w-5' />
+                      </button>
+                    </div>
+                  </li>
+                ))}
             </ul>
           )}
         </div>
@@ -224,44 +249,80 @@ const Todo = ({ title }: Props) => {
         {/* Completed Reminders list */}
         <p className='text-4xl'>Completed</p>
         <ul className='divide-y divide-gray-200 border border-gray-200 rounded-lg overflow-hidden'>
-          {reminders.filter((reminder) => reminder.completed).map((reminder) => (
-            <li key={reminder.Id} className='p-4 bg-white hover:bg-gray-50'>
-              <div className='flex items-center'>
-                <input
-                  type='checkbox'
-                  checked={reminder.completed}
-                  onChange={() =>
-                    toggleReminderCompleted(
-                      reminder.Id,
-                      reminder.Item,
+          {reminders
+            .filter((reminder) => reminder.completed)
+            .map((reminder) => (
+              <li key={reminder.Id} className='p-4 bg-white hover:bg-gray-50'>
+                <div className='flex items-center'>
+                  <input
+                    type='checkbox'
+                    checked={reminder.completed}
+                    onChange={() =>
+                      toggleReminderCompleted(
+                        reminder.Id,
+                        reminder.Item,
+                        reminder.completed
+                      )
+                    }
+                    className='h-5 w-5 text-blue-600 rounded mr-3 focus:ring-blue-500'
+                  />
+                  <span
+                    className={`flex-1 ${
                       reminder.completed
-                    )
-                  }
-                  className='h-5 w-5 text-blue-600 rounded mr-3 focus:ring-blue-500'
-                />
-                <span
-                  className={`flex-1 ${
-                    reminder.completed
-                      ? 'line-through text-gray-500'
-                      : 'text-gray-900'
-                  }`}
-                >
-                  {reminder.Item}
-                </span>
-                <span className='text-sm text-gray-500 mr-3'>
-                  {new Date(reminder.createdAt * 1000).toLocaleString()}
-                </span>
+                        ? 'line-through text-gray-500'
+                        : 'text-gray-900'
+                    }`}
+                  >
+                    {reminder.Item}
+                  </span>
+                  <span className='text-sm text-gray-500 mr-3'>
+                    {new Date(reminder.createdAt * 1000).toLocaleString()}
+                  </span>
+                  <button
+                    onClick={() => deleteReminder(reminder.Id, reminder.Item)}
+                    className='text-red-500 hover:text-red-700 p-1 rounded-full hover:bg-red-100 transition-colors'
+                    title='Delete reminder'
+                  >
+                    <TrashIcon className='h-5 w-5' />
+                  </button>
+                </div>
+              </li>
+            ))}
+        </ul>
+
+        {/* Contact Modal */}
+        <SignUp title={"Reach out"} description={'Send me an email to try this out'} />
+        {openContactModal && (
+          <div className='fixed top-0'>
+            <div className='bg-pink-800 rounded-lg shadow-xl w-full max-w-xl overflow-hidden p-4'>
+              {/* Modal Header */}
+              <div className='flex justify-between items-center'>
+                <h2 className='text-xl font-semibold'>
+                  Email me at weinianlim26@gmail.com to try this out!
+                </h2>
                 <button
-                  onClick={() => deleteReminder(reminder.Id, reminder.Item)}
-                  className='text-red-500 hover:text-red-700 p-1 rounded-full hover:bg-red-100 transition-colors'
-                  title='Delete reminder'
+                  onClick={() => setOpenContactModal(false)}
+                  className='text-gray-400 hover:text-white transition-colors'
                 >
-                  <TrashIcon className='h-5 w-5' />
+                  <svg
+                    xmlns='http://www.w3.org/2000/svg'
+                    className='h-6 w-6'
+                    fill='none'
+                    viewBox='0 0 24 24'
+                    stroke='currentColor'
+                  >
+                    <path
+                      strokeLinecap='round'
+                      strokeLinejoin='round'
+                      strokeWidth={2}
+                      d='M6 18L18 6M6 6l12 12'
+                    />
+                  </svg>
                 </button>
               </div>
-            </li>
-          ))}
-        </ul>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )

@@ -4,6 +4,11 @@ import type { NextRequest } from 'next/server'
 export function middleware(request: NextRequest) {
   const basicAuth = request.headers.get('authorization')
 
+  if (process.env.NODE_ENV === 'development') {
+    // Skip authentication in development mode
+    return NextResponse.next()
+  }
+
   if (!basicAuth) {
     return new NextResponse(null, {
       status: 401,

@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react'
+import React, { use, useEffect, useState } from 'react'
 import Button from '@/components/Button'
 import { nanoid } from 'nanoid'
 import Card from '@/components/Card'
 import { GetServerSideProps } from 'next/types'
 import { formatUnixTimestamp } from '@/utils/formatUnixTimeStamp'
 import Head from 'next/head'
+import { LimitStatus } from '@/enums/api'
 
 interface Props {
   title: string
@@ -34,18 +35,38 @@ const URLShortener = ({ title, baseUrl }: Props) => {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [urlError, setUrlError] = useState('')
   const [showSuccess, setShowSuccess] = useState(false)
+  const [limitExceeded, setLimitExceeded] = useState(false)
+
+  // useEffect(() => {
+  //   const checkLimit = async () => {
+  //     await fetch('/api/aws/checkLimit', {
+  //       method: 'GET',
+  //     })
+  //   }
+  //   const response = checkLimit()
+  //   conolse.log('Limit check response:', response.json())
+  // }, [])
 
   const addItemToTable = async (newURL: Url) => {
     try {
-      const response = await fetch('/api/aws/putItem', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(newURL),
+      const checkLimit = await fetch('/api/aws/checkLimit?limit=1', {
+        method: 'GET',
       })
 
-      return response.json()
+      const limitResponse = await checkLimit.json()
+      if (limitResponse.status === LimitStatus.REJECTED) {
+        setLimitExceeded(true)
+        throw new Error('Daily limit exceeded. Please try again tomorrow.')
+      }
+      // const response = await fetch('/api/aws/putItem', {
+      //   method: 'POST',
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //   },
+      //   body: JSON.stringify(newURL),
+      // })
+
+      return limitResponse.json()
     } catch (error) {
       console.error('Error adding item to table:', error)
       throw error
@@ -63,11 +84,11 @@ const URLShortener = ({ title, baseUrl }: Props) => {
     setIsSubmitting(true)
     try {
       // Format URL if it doesn't have http/https
-      const formattedUrl = longUrl.startsWith('http')
-        ? longUrl
-        : `https://${longUrl}`
+      // const formattedUrl = longUrl.startsWith('http')
+      //   ? longUrl
+      //   : `https://${longUrl}`
       const newURL = {
-        LongUrl: formattedUrl,
+        LongUrl: longUrl,
         ShortUrl: nanoid(8),
         createdAt: Math.floor(Date.now() / 1000),
       }
@@ -82,13 +103,31 @@ const URLShortener = ({ title, baseUrl }: Props) => {
       console.error(error)
     } finally {
       setIsSubmitting(false)
+      setIsModalOpen(false)
     }
   }
 
   const handleLongURLChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setLongUrl(e.target.value)
+    const url = e.target.value
     // Clear error when user types
     if (urlError) setUrlError('')
+
+    // Validate URL length (limit: 2048 characters)
+    if (url.length > 2048) {
+      setUrlError('URL exceeds maximum allowed length (2048 characters)')
+    } else {
+      // Validate URL format using the URL constructor and enforce https protocol
+      try {
+        const parsedUrl = new URL(url)
+        if (parsedUrl.protocol !== 'https:') {
+          setUrlError('URL must use https:// protocol')
+        }
+      } catch (error) {
+        setUrlError('Invalid URL format')
+      }
+    }
+
+    setLongUrl(url)
   }
 
   const fetchItemsFromTable = async () => {
@@ -188,7 +227,9 @@ const URLShortener = ({ title, baseUrl }: Props) => {
           <div className='bg-slate-800 rounded-lg shadow-xl w-full max-w-md overflow-hidden'>
             {/* Modal Header */}
             <div className='flex justify-between items-center bg-slate-700 p-4 border-b border-slate-600'>
-              <h2 className='text-xl font-semibold'>Create a New Shortened URL</h2>
+              <h2 className='text-xl font-semibold'>
+                Create a New Shortened URL
+              </h2>
               <button
                 onClick={closeModal}
                 className='text-gray-400 hover:text-white transition-colors'
@@ -227,12 +268,13 @@ const URLShortener = ({ title, baseUrl }: Props) => {
                   {urlError && (
                     <p className='text-red-500 text-sm mt-1'>{urlError}</p>
                   )}
+                  {limitExceeded && (
+                    <p className='text-red-500 text-sm mt-1'>Daily limit Exceeded</p>
+                  )}
                 </div>
                 <div className='pt-2'>
                   <Button
-                    buttonText={
-                      isSubmitting ? 'Creating...' : 'Shorten URL'
-                    }
+                    buttonText={isSubmitting ? 'Creating...' : 'Shorten URL'}
                     onClick={handleCreateShortURL}
                   />
                 </div>

@@ -25,7 +25,9 @@ export default async function putItem(
   try {
     const response = await docClient.send(command);
     console.log("Successfully stored URL:", response);
+    return res.status(200).json({ message: "Successfully stored URL", response });
   } catch (error) {
     console.error("Error storing URL:", error);
+    return res.status(500).json({ message: "Error storing URL", error });
   }
 }
